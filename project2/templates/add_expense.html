@@ -1,0 +1,47 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="form-shell">
+  <div>
+    <p class="eyebrow">{{ t("new_record") }}</p>
+    <h1>{{ t("add_headline") }}</h1>
+  </div>
+
+  <form class="expense-form" method="post">
+    <label>
+      {{ t("date") }}
+      <input type="date" name="date" value="{{ today }}" required>
+    </label>
+
+    <label>
+      {{ t("category") }}
+      <select name="category" required>
+        {% for category in categories %}
+          <option value="{{ category }}">{{ t(category) }}</option>
+        {% endfor %}
+      </select>
+    </label>
+
+    <label>
+      {{ t("amount") }}
+      <input type="number" name="amount" min="0.01" step="0.01" required>
+    </label>
+
+    <label>
+      {{ t("importance") }}
+      <select name="importance" required>
+        {% for level in importance_levels %}
+          <option value="{{ level }}">{{ t(level) }}</option>
+        {% endfor %}
+      </select>
+    </label>
+
+    <label class="full">
+      {{ t("note") }}
+      <textarea name="note" rows="4" placeholder="{{ t('short_description') }}"></textarea>
+    </label>
+
+    <button class="button primary" type="submit">{{ t("save_expense") }}</button>
+  </form>
+</section>
+{% endblock %}

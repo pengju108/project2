@@ -1,0 +1,95 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="dashboard">
+  <div>
+    <p class="eyebrow">{{ t("ai_advisor") }}</p>
+    <h1>{{ t("advisor_headline") }}</h1>
+  </div>
+  <form class="target-form" method="get">
+    <label>
+      {{ t("target_savings") }}
+      <input type="number" name="target_savings" min="1" step="1" value="{{ target_savings }}">
+    </label>
+    <button class="button primary" type="submit">{{ t("update") }}</button>
+  </form>
+</section>
+
+<section class="advisor-summary">
+  <strong>${{ "%.2f"|format(advice.projected_savings) }}</strong>
+  <div>
+    <p>{{ advice.summary }}</p>
+    <small>{{ t("advisor_method_body") }}</small>
+  </div>
+</section>
+
+<section class="content-grid">
+  <div>
+    <h2>{{ t("recommended_cuts") }}</h2>
+    {% if advice.cuts %}
+      <div class="recommendation-list">
+        {% for item in advice.cuts %}
+          <article class="recommendation detailed">
+            <div class="recommendation-head">
+              <div>
+                <h3>{{ t(item.category) }}</h3>
+                <p>{{ item.reason }}</p>
+              </div>
+              <strong>{{ t("save") }} ${{ "%.2f"|format(item.recommended_cut) }}</strong>
+            </div>
+
+            <div class="explain-grid">
+              <section>
+                <h4>{{ t("why_this_recommendation") }}</h4>
+                <p>{{ item.evidence }}</p>
+              </section>
+              <section>
+                <h4>{{ t("calculation") }}</h4>
+                <p>{{ item.formula }}</p>
+              </section>
+              <section>
+                <h4>{{ t("expected_impact") }}</h4>
+                <p>{{ item.impact }}</p>
+              </section>
+              <section>
+                <h4>{{ t("how_to_save") }}</h4>
+                <ul>
+                  {% for step in item.action_steps %}
+                    <li>{{ step }}</li>
+                  {% endfor %}
+                </ul>
+              </section>
+            </div>
+          </article>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="empty">{{ t("empty_recommendations") }}</p>
+    {% endif %}
+  </div>
+
+  <aside>
+    <h2>{{ t("protected_spending") }}</h2>
+    {% if advice.protected %}
+      <div class="recommendation-list compact">
+        {% for item in advice.protected %}
+          <article class="recommendation protected-card">
+            <div>
+              <h3>{{ t(item.category) }}</h3>
+              <p>{{ item.reason }}</p>
+              {% if item.evidence %}
+                <p class="evidence">{{ item.evidence }}</p>
+              {% endif %}
+              {% if item.impact %}
+                <p class="evidence">{{ item.impact }}</p>
+              {% endif %}
+            </div>
+          </article>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="empty">{{ t("protected_empty") }}</p>
+    {% endif %}
+  </aside>
+</section>
+{% endblock %}

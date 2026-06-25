@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="{{ lang }}">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>{{ t("app_name") }}</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  </head>
+  <body>
+    <header class="topbar">
+      <a class="brand" href="{{ url_for('index') }}">{{ t("app_name") }}</a>
+      <nav>
+        <a href="{{ url_for('index') }}">{{ t("dashboard") }}</a>
+        <a href="{{ url_for('add_expense') }}">{{ t("add_expense") }}</a>
+        <a href="{{ url_for('analysis') }}">{{ t("analysis") }}</a>
+        <a href="{{ url_for('recommendations') }}">{{ t("ai_advisor") }}</a>
+      </nav>
+      <div class="language-switch" aria-label="{{ t('language') }}">
+        <a class="{{ 'active' if lang == 'en' else '' }}" href="{{ url_for('set_language', lang='en') }}">EN</a>
+        <a class="{{ 'active' if lang == 'zh' else '' }}" href="{{ url_for('set_language', lang='zh') }}">中文</a>
+      </div>
+    </header>
+    <main class="page">
+      {% block content %}{% endblock %}
+    </main>
+  </body>
+</html>

@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="dashboard">
+  <div>
+    <p class="eyebrow">{{ t("daily_overview") }}</p>
+    <h1>{{ t("track_headline") }}</h1>
+  </div>
+  <a class="button primary" href="{{ url_for('add_expense') }}">{{ t("add_expense") }}</a>
+</section>
+
+<section class="stats-grid">
+  <article class="stat">
+    <span>{{ t("total_spending") }}</span>
+    <strong>${{ "%.2f"|format(total) }}</strong>
+  </article>
+  <article class="stat">
+    <span>{{ t("records") }}</span>
+    <strong>{{ expenses|length }}</strong>
+  </article>
+  <article class="stat">
+    <span>{{ t("top_category") }}</span>
+    <strong>{{ t(category_totals[0]["category"]) if category_totals else t("none") }}</strong>
+  </article>
+</section>
+
+<section class="content-grid">
+  <div>
+    <h2>{{ t("expenses") }}</h2>
+    {% if expenses %}
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>{{ t("date") }}</th>
+              <th>{{ t("category") }}</th>
+              <th>{{ t("amount") }}</th>
+              <th>{{ t("importance") }}</th>
+              <th>{{ t("note") }}</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for expense in expenses %}
+              <tr>
+                <td>{{ expense["date"] }}</td>
+                <td>{{ t(expense["category"]) }}</td>
+                <td>${{ "%.2f"|format(expense["amount"]) }}</td>
+                <td><span class="tag">{{ t(expense["importance"]) }}</span></td>
+                <td>{{ expense["note"] or "-" }}</td>
+                <td>
+                  <form action="{{ url_for('delete_expense', expense_id=expense['id']) }}" method="post">
+                    <button class="link-button" type="submit">{{ t("delete") }}</button>
+                  </form>
+                </td>
+              </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    {% else %}
+      <p class="empty">{{ t("no_expenses") }}</p>
+    {% endif %}
+  </div>
+
+  <aside>
+    <h2>{{ t("by_category") }}</h2>
+    {% if category_totals %}
+      <div class="category-list">
+        {% for row in category_totals %}
+          <div class="category-row">
+            <span>{{ t(row["category"]) }}</span>
+            <strong>${{ "%.2f"|format(row["total"]) }}</strong>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <p class="empty">{{ t("category_totals_empty") }}</p>
+    {% endif %}
+  </aside>
+</section>
+{% endblock %}

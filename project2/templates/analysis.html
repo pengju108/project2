@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+
+{% block content %}
+<section class="dashboard">
+  <div>
+    <p class="eyebrow">{{ t("analysis_overview") }}</p>
+    <h1>{{ t("analysis_headline") }}</h1>
+  </div>
+  <a class="button primary" href="{{ url_for('add_expense') }}">{{ t("add_expense") }}</a>
+</section>
+
+<section class="stats-grid">
+  <article class="stat">
+    <span>{{ t("total_spending") }}</span>
+    <strong>${{ "%.2f"|format(analysis.total) }}</strong>
+  </article>
+  <article class="stat">
+    <span>{{ t("average_expense") }}</span>
+    <strong>${{ "%.2f"|format(analysis.average) }}</strong>
+  </article>
+  <article class="stat">
+    <span>{{ t("largest_expense") }}</span>
+    <strong>${{ "%.2f"|format(analysis.largest) }}</strong>
+  </article>
+</section>
+
+{% if analysis.category_rows %}
+  <section class="analysis-grid">
+    <div>
+      <h2>{{ t("category_chart") }}</h2>
+      <div class="chart-panel">
+        {% for row in analysis.category_rows %}
+          <div class="bar-row">
+            <div class="bar-meta">
+              <strong>{{ t(row.label) }}</strong>
+              <span>${{ "%.2f"|format(row.amount) }} · {{ row.percent }}% {{ t("of_total") }}</span>
+            </div>
+            <div class="bar-track">
+              <div class="bar-fill" style="width: {{ row.width }}%;"></div>
+            </div>
+          </div>
+        {% endfor %}
+      </div>
+    </div>
+
+    <aside>
+      <h2>{{ t("spending_share") }}</h2>
+      <div class="donut" style="background: {{ analysis.donut_style }};">
+        <span>${{ "%.0f"|format(analysis.total) }}</span>
+      </div>
+      <div class="legend">
+        {% for row in analysis.category_rows %}
+          <div class="legend-row">
+            <span>{{ t(row.label) }}</span>
+            <strong>{{ row.percent }}%</strong>
+          </div>
+        {% endfor %}
+      </div>
+    </aside>
+  </section>
+
+  <section class="importance-section">
+    <h2>{{ t("importance_distribution") }}</h2>
+    <div class="chart-panel">
+      {% for row in analysis.importance_rows %}
+        <div class="bar-row">
+          <div class="bar-meta">
+            <strong>{{ t(row.label) }}</strong>
+            <span>${{ "%.2f"|format(row.amount) }} · {{ row.percent }}% {{ t("of_total") }}</span>
+          </div>
+          <div class="bar-track">
+            <div class="bar-fill secondary" style="width: {{ row.width }}%;"></div>
+          </div>
+        </div>
+      {% endfor %}
+    </div>
+  </section>
+{% else %}
+  <p class="empty">{{ t("no_chart_data") }}</p>
+{% endif %}
+{% endblock %}
